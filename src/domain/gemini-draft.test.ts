@@ -67,8 +67,7 @@ describe("parseGeminiDraft", () => {
   });
 
   it("reports every missing or mistyped field by name", () => {
-    const { display_title: _t, tags: _tags, ...rest } = validDraft;
-    const raw = JSON.stringify({ ...rest, storytellers: "คุณสมชาย" });
+    const raw = JSON.stringify({ ...validDraft, display_title: undefined, tags: undefined, storytellers: "คุณสมชาย" });
 
     const result = parseGeminiDraft(raw, context);
 
