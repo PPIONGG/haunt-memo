@@ -23,18 +23,25 @@ export function serviceClient(): SupabaseClient {
   return createClient(API_URL, SERVICE_ROLE_KEY, clientOptions);
 }
 
-/** Creates a confirmed user with the given email and returns a client signed in as them. */
-export async function signedInClient(email: string): Promise<SupabaseClient> {
+/**
+ * Creates a confirmed user with the given email and returns a client signed in as them.
+ * `provider` is the sign-in method recorded in the user's server-controlled app_metadata.
+ */
+export async function signedInClient(email: string, provider: "google" | "email" = "email"): Promise<SupabaseClient> {
   const password = `pw-${randomUUID()}`;
   const admin = serviceClient();
   const { data: existing } = await admin.auth.admin.listUsers();
-  const user = existing.users.find((u) => u.email === email);
-  if (user) {
-    await admin.auth.admin.updateUserById(user.id, { password });
-  } else {
-    const { error } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
+  let userId = existing.users.find((u) => u.email === email)?.id;
+  if (!userId) {
+    const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
     if (error) throw error;
+    userId = data.user.id;
   }
+  const { error: updateError } = await admin.auth.admin.updateUserById(userId, {
+    password,
+    app_metadata: { provider, providers: [provider] },
+  });
+  if (updateError) throw updateError;
   const client = anonClient();
   const { error } = await client.auth.signInWithPassword({ email, password });
   if (error) throw error;

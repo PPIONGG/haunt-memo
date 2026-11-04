@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseGeminiDraft } from "./gemini-draft";
+import { buildGeminiPrompt, GEMINI_DRAFT_SCHEMA, parseGeminiDraft } from "./gemini-draft";
 import { PROVINCES } from "./provinces";
 
 const context = {
@@ -167,5 +167,21 @@ describe("parseGeminiDraft", () => {
         ["displayTitle", "place", "province", "storytellers", "synopsis", "tags"],
       );
     }
+  });
+});
+
+describe("buildGeminiPrompt", () => {
+  it("includes the current Tag list, every Province, and the JSON schema contract", () => {
+    const prompt = buildGeminiPrompt(["โรงพยาบาล", "ผีบ้าน"], PROVINCES);
+
+    expect(prompt).toContain("โรงพยาบาล, ผีบ้าน");
+    for (const province of PROVINCES) expect(prompt).toContain(province);
+    expect(prompt).toContain(JSON.stringify(GEMINI_DRAFT_SCHEMA, null, 2));
+  });
+
+  it("describes the six fields the spec's contract asks Gemini for, and no Scare Level or Broadcast Date", () => {
+    expect(GEMINI_DRAFT_SCHEMA.required).toEqual(["display_title", "synopsis", "storytellers", "province", "place", "tags"]);
+    expect(Object.keys(GEMINI_DRAFT_SCHEMA.properties)).not.toContain("scare_level");
+    expect(Object.keys(GEMINI_DRAFT_SCHEMA.properties)).not.toContain("broadcast_date");
   });
 });

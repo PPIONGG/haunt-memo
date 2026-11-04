@@ -5,6 +5,7 @@ import { allowCurator, anonClient, resetArchive, serviceClient, signedInClient }
 
 const CURATOR_EMAIL = "curator@haunt-memo.test";
 const STRANGER_EMAIL = "stranger@haunt-memo.test";
+const PASSWORD_IMPOSTOR_EMAIL = "allowlisted-but-password@haunt-memo.test";
 
 const PUBLISHED_ID = "pubAAAAAAAA";
 const DRAFT_ID = "draftBBBBBB";
@@ -57,6 +58,14 @@ async function seedArchive(): Promise<Seeded> {
   return { publishedStoryId, draftStoryId, publicTagId: tags![0].id, draftOnlyTagId: tags![1].id };
 }
 
+async function archiveSnapshot() {
+  const db = serviceClient();
+  const tables = ["stories", "tags", "storytellers", "story_tags", "story_storytellers", "curator_allowlist"];
+  const rows = await Promise.all(tables.map((t) => db.from(t).select("*").throwOnError()));
+  const sortRows = (data: unknown[]) => data.map((r) => JSON.stringify(r)).sort();
+  return Object.fromEntries(tables.map((t, i) => [t, sortRows(rows[i].data!)]));
+}
+
 async function storyCount(): Promise<number> {
   const { count } = await serviceClient().from("stories").select("*", { count: "exact", head: true });
   return count ?? 0;
@@ -64,11 +73,14 @@ async function storyCount(): Promise<number> {
 
 let curator: SupabaseClient;
 let stranger: SupabaseClient;
+let passwordImpostor: SupabaseClient;
 
 beforeAll(async () => {
   await allowCurator(CURATOR_EMAIL);
-  curator = await signedInClient(CURATOR_EMAIL);
-  stranger = await signedInClient(STRANGER_EMAIL);
+  await allowCurator(PASSWORD_IMPOSTOR_EMAIL);
+  curator = await signedInClient(CURATOR_EMAIL, "google");
+  stranger = await signedInClient(STRANGER_EMAIL, "google");
+  passwordImpostor = await signedInClient(PASSWORD_IMPOSTOR_EMAIL, "email");
 });
 
 beforeEach(async () => {
@@ -105,6 +117,7 @@ describe("an anonymous Fan", () => {
 describe.each([
   ["an anonymous Fan", () => anonClient()],
   ["a signed-in non-Curator", () => stranger],
+  ["someone signed in with a password under an allowlisted email", () => passwordImpostor],
 ])("%s", (_who, client) => {
   it("can't insert into any table", async () => {
     const db = client();
@@ -121,20 +134,22 @@ describe.each([
     expect(await storyCount()).toBe(2);
   });
 
-  it("can't update or delete Stories", async () => {
+  it("can't update or delete any table", async () => {
     const db = client();
+    const before = await archiveSnapshot();
     await db.from("stories").update({ status: "published" }).eq("id", seeded.draftStoryId);
     await db.from("stories").update({ display_title: "ถูกแก้" }).eq("id", seeded.publishedStoryId);
+    await db.from("tags").update({ name: "ถูกแก้" }).eq("id", seeded.publicTagId);
+    await db.from("storytellers").update({ name: "ถูกแก้" }).not("id", "is", null);
+    await db.from("story_tags").update({ tag_id: seeded.draftOnlyTagId }).eq("story_id", seeded.publishedStoryId);
+    await db.from("story_tags").delete().eq("story_id", seeded.publishedStoryId);
+    await db.from("story_storytellers").delete().eq("story_id", seeded.publishedStoryId);
     await db.from("stories").delete().eq("id", seeded.publishedStoryId);
     await db.from("tags").delete().eq("id", seeded.publicTagId);
+    await db.from("storytellers").delete().not("id", "is", null);
+    await db.from("curator_allowlist").delete().eq("email", CURATOR_EMAIL);
 
-    const { data } = await serviceClient().from("stories").select("id, status, display_title").order("status");
-    expect(data).toEqual([
-      { id: seeded.draftStoryId, status: "draft", display_title: `เรื่อง ${DRAFT_ID}` },
-      { id: seeded.publishedStoryId, status: "published", display_title: `เรื่อง ${PUBLISHED_ID}` },
-    ]);
-    const { count } = await serviceClient().from("tags").select("*", { count: "exact", head: true });
-    expect(count).toBe(2);
+    expect(await archiveSnapshot()).toEqual(before);
   });
 
   it("can't save Stories or merge Tags through the database functions", async () => {

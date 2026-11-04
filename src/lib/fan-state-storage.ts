@@ -11,8 +11,10 @@ type StoredFanState = { listened: string[]; favourites: string[] };
 const listeners = new Set<() => void>();
 let cachedRaw: string | null = null;
 let cachedState: FanState = EMPTY;
+let memoryOnly = false;
 
 function read(): FanState {
+  if (memoryOnly) return cachedState;
   let raw: string | null = null;
   try {
     raw = window.localStorage.getItem(STORAGE_KEY);
@@ -43,8 +45,8 @@ function write(state: FanState) {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
   } catch {
-    // Private browsing or full storage: keep the marks for this visit only.
-    cachedRaw = null;
+    // Private browsing or full storage: keep the marks for this visit only, ignoring the stale stored copy.
+    memoryOnly = true;
     cachedState = state;
   }
   for (const listener of listeners) listener();

@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Haunt Memo
 
-## Getting Started
+A curated Archive of ghost stories from The Ghost Radio. See `GLOSSARY.md`, `docs/specs/` and `docs/adr/`.
 
-First, run the development server:
+## Local development
+
+Requires Docker (for local Supabase) and pnpm.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+pnpm supabase start          # local Postgres + Auth, applies supabase/migrations
+pnpm supabase status         # copy API_URL and ANON_KEY into .env.local (see .env.example)
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To use the admin area locally, add your email to the allowlist (Supabase Studio → SQL editor):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sql
+insert into public.curator_allowlist (email) values ('you@example.com');
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Google sign-in against local Supabase needs `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET` in `.env.local`.
 
-## Learn More
+## Tests
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm test        # pure domain modules (Vitest)
+pnpm test:rls    # RLS integration tests; needs `pnpm supabase start`
+pnpm typecheck
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production (Supabase + Vercel)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push the migrations: `pnpm supabase link` then `pnpm supabase db push`.
+2. In Supabase Auth, enable the **Google** provider and **disable the Email provider**. The database already refuses writes from anyone who didn't sign up with Google, even with an allowlisted email; disabling email sign-up keeps impostor accounts from existing at all.
+3. Add the Curator's email to `public.curator_allowlist`.
+4. Add the site's `/auth/callback` URL to Supabase Auth's redirect URLs.
+5. On Vercel, set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.

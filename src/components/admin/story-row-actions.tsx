@@ -46,7 +46,7 @@ export function StoryRowActions({ storyId, status, title }: Props) {
         </Button>
       ) : (
         <Button size="sm" variant="outline" disabled={pending} onClick={() => run(() => setStoryStatus(storyId, "draft"), "ย้ายกลับเป็นฉบับร่างแล้ว")}>
-          ซ่อน
+          กลับเป็นฉบับร่าง
         </Button>
       )}
       <AlertDialog>

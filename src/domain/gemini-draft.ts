@@ -83,20 +83,28 @@ export function parseGeminiDraft(rawText: string, context: GeminiDraftContext): 
   };
 }
 
+/** The contract between Gemini and the Curator's form (ADR 0003); `parseGeminiDraft` enforces it. */
+export const GEMINI_DRAFT_SCHEMA = {
+  type: "object",
+  required: ["display_title", "synopsis", "storytellers", "province", "place", "tags"],
+  additionalProperties: false,
+  properties: {
+    display_title: { type: "string", description: "ชื่อเรื่องภาษาไทยสั้น ๆ อ่านง่าย" },
+    synopsis: { type: "string", description: "เรื่องย่อ 3–5 ประโยค ปูเรื่องให้น่าฟัง ห้ามเปิดเผยตอนจบ" },
+    storytellers: { type: "array", items: { type: "string" }, description: "ชื่อผู้เล่าเรื่อง" },
+    province: { type: ["string", "null"], description: "ชื่อจังหวัดจากรายการด้านล่างแบบตรงตัว หรือ null" },
+    place: { type: ["string", "null"], description: "สถานที่เกิดเหตุแบบเจาะจง หรือ null" },
+    tags: { type: "array", items: { type: "string" }, description: "แท็กจากรายการด้านล่าง" },
+  },
+} as const;
+
 export function buildGeminiPrompt(tagNames: readonly string[], provinces: readonly string[]): string {
   return [
     "คุณเป็นผู้ช่วยทำคลังเรื่องผีจากรายการ The Ghost Radio",
-    "ดูคลิป YouTube ที่แนบมา แล้วตอบกลับเป็น JSON เท่านั้น ตามรูปแบบนี้:",
+    "ดูคลิป YouTube ที่แนบมา แล้วตอบกลับเป็น JSON ออบเจกต์เดียวเท่านั้น ที่ตรงกับ JSON Schema นี้:",
     "",
     "```json",
-    "{",
-    '  "display_title": "ชื่อเรื่องภาษาไทยสั้น ๆ อ่านง่าย",',
-    '  "synopsis": "เรื่องย่อ 3–5 ประโยค ปูเรื่องให้น่าฟัง ห้ามเปิดเผยตอนจบ",',
-    '  "storytellers": ["ชื่อผู้เล่าเรื่อง"],',
-    '  "province": "ชื่อจังหวัดจากรายการด้านล่าง หรือ null",',
-    '  "place": "สถานที่เกิดเหตุแบบเจาะจง หรือ null",',
-    '  "tags": ["แท็กจากรายการด้านล่าง"]',
-    "}",
+    JSON.stringify(GEMINI_DRAFT_SCHEMA, null, 2),
     "```",
     "",
     "กติกา:",
