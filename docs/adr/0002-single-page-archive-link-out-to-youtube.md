@@ -1,6 +1,6 @@
 # Single-page Archive that links out to YouTube
 
-The Archive replaces an Instagram Story Highlight and is reached from one link in the Curator's IG bio. So the site is a single page: tapping a Story card opens a modal, and there are no per-Story URLs or pages. Listening always happens on YouTube (app or web) through a link-out. We don't embed a player. This keeps the site small and sends views back to The Ghost Radio channel.
+The Archive replaces an Instagram Story Highlight and is reached from one link in the Curator's IG bio. So the site is a single page: tapping a Story card opens a modal, and there are no per-Story URLs or pages. Listening always happens on YouTube (app or web) through a link-out. We don't embed a player. This keeps the site small and sends views back to each Story's Channel.
 
 ## Consequences
 

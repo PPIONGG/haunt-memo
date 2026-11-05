@@ -1,6 +1,6 @@
 # Haunt Memo
 
-A curated Archive of ghost stories from The Ghost Radio. See `GLOSSARY.md`, `docs/specs/` and `docs/adr/`.
+A curated Archive of ghost stories from YouTube, mostly from The Ghost Radio but open to any Channel. See `GLOSSARY.md`, `docs/specs/` and `docs/adr/`.
 
 ## Local development
 

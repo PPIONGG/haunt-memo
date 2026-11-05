@@ -1,6 +1,6 @@
 # Haunt Memo
 
-A personal curated archive of ghost stories from the YouTube channel "The Ghost Radio", hand-picked by a single curator. It replaces an Instagram Story Highlight, which got too hard for fans to browse once it held around 100 clips.
+A personal curated archive of ghost stories from YouTube, hand-picked by a single curator. Most Stories come from The Ghost Radio, but a Story can come from any YouTube Channel. It replaces an Instagram Story Highlight, which got too hard for fans to browse once it held around 100 clips.
 
 ## Language
 
@@ -9,8 +9,12 @@ The whole collection of Stories the Curator has picked. Fans can see all of it.
 _Avoid_: Library, playlist, highlight
 
 **Story**:
-A single YouTube clip from The Ghost Radio that the Curator picked for the Archive. One Story is one YouTube video.
+A single YouTube clip that the Curator picked for the Archive. It can come from any Channel. One Story is one YouTube video.
 _Avoid_: Clip, episode, video, post
+
+**Channel**:
+The YouTube channel that published a Story's clip, such as The Ghost Radio. The Archive isn't tied to one Channel.
+_Avoid_: Show, program, source
 
 **Curator**:
 The single owner of the Archive. The Curator is the only person who adds, edits, or publishes Stories.
@@ -49,7 +53,7 @@ An optional free-text description of the exact place where the events in a Story
 _Avoid_: Location, venue
 
 **Broadcast Date**:
-The date the Story's YouTube clip was published on The Ghost Radio channel.
+The date the Story's YouTube clip was published on its Channel.
 _Avoid_: Air date, upload date
 
 **Added Date**:
