@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { isProvince } from "@/domain/provinces";
-import { parseYouTubeUrl, youTubeWatchUrl } from "@/domain/youtube";
+import { parseYouTubePublishDate, parseYouTubeUrl, youTubeWatchUrl } from "@/domain/youtube";
 import { ARCHIVE_CACHE_TAG } from "@/lib/archive-data";
 import { requireCurator } from "@/lib/curator";
 import type { Database } from "@/lib/supabase/database.types";
@@ -32,6 +32,8 @@ export type StoryInput = {
 export type YouTubeLookup = {
   youtubeId: string;
   title: string | null;
+  /** The day the clip went public on YouTube (Thai time), a starting value for the Broadcast Date. */
+  publishDate: string | null;
   duplicate: { id: string; displayTitle: string } | null;
 };
 
@@ -40,13 +42,14 @@ export async function lookupYouTube(url: string, editingStoryId: string | null):
   const youtubeId = parseYouTubeUrl(url);
   if (!youtubeId) return { ok: false, error: "ลิงก์นี้ไม่ใช่คลิป YouTube" };
 
-  const [title, { data: existing }] = await Promise.all([
+  const [title, publishDate, { data: existing }] = await Promise.all([
     fetchYouTubeTitle(youtubeId),
+    fetchYouTubePublishDate(youtubeId),
     supabase.from("stories").select("id, display_title").eq("youtube_id", youtubeId).maybeSingle(),
   ]);
   const duplicate =
     existing && existing.id !== editingStoryId ? { id: existing.id, displayTitle: existing.display_title } : null;
-  return { ok: true, value: { youtubeId, title, duplicate } };
+  return { ok: true, value: { youtubeId, title, publishDate, duplicate } };
 }
 
 export async function saveStory(input: StoryInput): Promise<ActionResult<{ id: string }>> {
@@ -152,6 +155,20 @@ async function fetchYouTubeTitle(youtubeId: string): Promise<string | null> {
     if (!response.ok) return null;
     const body = (await response.json()) as { title?: unknown };
     return typeof body.title === "string" ? body.title : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Reads the publish date off the public watch page (no API key). Returns null if YouTube changes the page. */
+async function fetchYouTubePublishDate(youtubeId: string): Promise<string | null> {
+  try {
+    const response = await fetch(youTubeWatchUrl(youtubeId), {
+      headers: { "Accept-Language": "en", "User-Agent": "Mozilla/5.0 (compatible; HauntMemo/1.0)" },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!response.ok) return null;
+    return parseYouTubePublishDate(await response.text());
   } catch {
     return null;
   }

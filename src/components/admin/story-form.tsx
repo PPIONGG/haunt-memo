@@ -83,7 +83,7 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
       set({ youtubeId: null });
       return;
     }
-    const { youtubeId, title, duplicate } = result.value;
+    const { youtubeId, title, publishDate, duplicate } = result.value;
     setLookup({
       pending: false,
       error: title ? null : "ดึงชื่อคลิปไม่ได้ พิมพ์ชื่อเองได้เลย",
@@ -94,6 +94,8 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
       youtubeId,
       youtubeTitle: title ?? v.youtubeTitle,
       displayTitle: v.displayTitle || title || "",
+      // Never overwrite a date the Curator already set.
+      broadcastDate: v.broadcastDate || publishDate || "",
     }));
   };
 
@@ -325,6 +327,9 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
               value={values.broadcastDate}
               onChange={(e) => set({ broadcastDate: e.target.value })}
             />
+            <p className="text-xs text-muted-foreground">
+              กด &ldquo;ดึงข้อมูล&rdquo; แล้วระบบจะใส่วันที่คลิปเผยแพร่บน YouTube ให้ แก้ได้ถ้าวันออกอากาศจริงต่างกัน
+            </p>
           </Field>
         </div>
       </Section>

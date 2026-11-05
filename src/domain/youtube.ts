@@ -25,6 +25,35 @@ export function youTubeWatchUrl(id: YouTubeId): string {
   return `https://www.youtube.com/watch?v=${id}`;
 }
 
+const PUBLISH_DATE_PATTERNS = [
+  /"publishDate":"([^"]+)"/,
+  /itemprop="datePublished"\s+content="([^"]+)"/,
+  /"uploadDate":"([^"]+)"/,
+  /itemprop="uploadDate"\s+content="([^"]+)"/,
+];
+
+const thaiCalendarDate = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Bangkok",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/**
+ * Reads the day a clip went public from the HTML of its YouTube watch page, as `YYYY-MM-DD` in Thai time.
+ * The Broadcast Date is usually that day, so the admin form uses it as a starting value.
+ */
+export function parseYouTubePublishDate(html: string): string | null {
+  for (const pattern of PUBLISH_DATE_PATTERNS) {
+    const raw = pattern.exec(html)?.[1];
+    if (!raw) continue;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    const instant = new Date(raw);
+    if (!Number.isNaN(instant.getTime())) return thaiCalendarDate.format(instant);
+  }
+  return null;
+}
+
 function toUrl(text: string): URL | null {
   if (!text) return null;
   const withScheme = /^https?:\/\//i.test(text) ? text : `https://${text}`;
