@@ -16,7 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { hasUnsavedChanges } from "@/domain/unsaved-changes";
 import { copyText } from "@/lib/copy-text";
+import { LeaveGuard } from "./leave-guard";
 import { cn } from "@/lib/utils";
 import { VocabularyInput } from "./vocabulary-input";
 
@@ -79,6 +81,8 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
   const [geminiWarnings, setGeminiWarnings] = useState<DraftWarning[]>([]);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, startSaving] = useTransition();
+  /** Set once saving succeeds, so moving on to the list doesn't ask about unsaved work. */
+  const [saved, setSaved] = useState(false);
 
   const set = (patch: Partial<StoryFormValues>) => setValues((v) => ({ ...v, ...patch }));
 
@@ -155,6 +159,7 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
         setSaveError(result.error);
         return;
       }
+      setSaved(true);
       toast.success(status === "published" ? "บันทึกและเผยแพร่แล้ว" : "บันทึกเป็นฉบับร่างแล้ว");
       router.push("/admin");
       router.refresh();
@@ -165,6 +170,7 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
 
   return (
     <form className="grid gap-8" onSubmit={(e) => e.preventDefault()}>
+      <LeaveGuard active={!saved && hasUnsavedChanges(initial, values, geminiText)} />
       <Section title="คลิป YouTube">
         <div className="grid gap-1.5">
           <Label htmlFor="youtube-url">ลิงก์ YouTube</Label>
