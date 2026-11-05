@@ -61,6 +61,8 @@ type Props = {
 export function StoryForm({ storyId, initial, existingTags, existingStorytellers }: Props) {
   const router = useRouter();
   const [values, setValues] = useState(initial);
+  /** The clip whose details are in the form, to tell a re-fetch of the same clip from a new one. */
+  const [filledFrom, setFilledFrom] = useState(initial.youtubeId);
   const [lookup, setLookup] = useState<{ pending: boolean; error: string | null; duplicate: YouTubeLookup["duplicate"] }>({
     pending: false,
     error: null,
@@ -84,19 +86,30 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
       return;
     }
     const { youtubeId, title, publishDate, duplicate } = result.value;
+    // A different clip than the one the form was filled from: its old date and auto title no longer apply.
+    const newClip = youtubeId !== filledFrom;
+    setFilledFrom(youtubeId);
     setLookup({
       pending: false,
-      error: title ? null : "ดึงชื่อคลิปไม่ได้ พิมพ์ชื่อเองได้เลย",
+      error: [
+        title ? null : "ดึงชื่อคลิปไม่ได้ พิมพ์ชื่อเองได้เลย",
+        newClip && !publishDate ? "ดึงวันที่ออกอากาศไม่ได้ กรอกเองได้เลย" : null,
+      ]
+        .filter(Boolean)
+        .join(" · ") || null,
       duplicate,
     });
-    setValues((v) => ({
-      ...v,
-      youtubeId,
-      youtubeTitle: title ?? v.youtubeTitle,
-      displayTitle: v.displayTitle || title || "",
-      // Never overwrite a date the Curator already set.
-      broadcastDate: v.broadcastDate || publishDate || "",
-    }));
+    setValues((v) => {
+      const autoTitle = !v.displayTitle || v.displayTitle === v.youtubeTitle;
+      return {
+        ...v,
+        youtubeId,
+        youtubeTitle: title ?? (newClip ? "" : v.youtubeTitle),
+        displayTitle: newClip && autoTitle ? (title ?? "") : v.displayTitle || title || "",
+        // Same clip: keep a date the Curator may have corrected. New clip: always take its own date.
+        broadcastDate: newClip ? (publishDate ?? "") : v.broadcastDate || publishDate || "",
+      };
+    });
   };
 
   const copyPrompt = async () => {
