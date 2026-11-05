@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import { ClipboardCopyIcon, WandSparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 import { lookupYouTube, saveStory, type StoryStatus, type YouTubeLookup } from "@/app/admin/actions";
+import { prefillFromClip, type PrefillWarning } from "@/domain/clip-prefill";
 import { buildGeminiPrompt, parseGeminiDraft, type DraftWarning, type VocabularyEntry } from "@/domain/gemini-draft";
 import { PROVINCES } from "@/domain/provinces";
 import { youTubeThumbnailUrl } from "@/domain/youtube";
@@ -20,6 +21,11 @@ import { cn } from "@/lib/utils";
 import { VocabularyInput } from "./vocabulary-input";
 
 const NO_PROVINCE = "none";
+
+const PREFILL_WARNINGS: Record<PrefillWarning, string> = {
+  title_missing: "ดึงชื่อคลิปไม่ได้ พิมพ์ชื่อเองได้เลย",
+  date_missing: "ดึงวันที่ออกอากาศไม่ได้ กรอกเองได้เลย",
+};
 
 export type StoryFormValues = {
   youtubeUrl: string;
@@ -85,31 +91,16 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
       set({ youtubeId: null });
       return;
     }
-    const { youtubeId, title, publishDate, duplicate } = result.value;
-    // A different clip than the one the form was filled from: its old date and auto title no longer apply.
-    const newClip = youtubeId !== filledFrom;
-    setFilledFrom(youtubeId);
+    const { duplicate, ...clip } = result.value;
+    const { warnings } = prefillFromClip(values, filledFrom, clip);
+    setFilledFrom(clip.youtubeId);
     setLookup({
       pending: false,
-      error: [
-        title ? null : "ดึงชื่อคลิปไม่ได้ พิมพ์ชื่อเองได้เลย",
-        newClip && !publishDate ? "ดึงวันที่ออกอากาศไม่ได้ กรอกเองได้เลย" : null,
-      ]
-        .filter(Boolean)
-        .join(" · ") || null,
+      error: warnings.map((w) => PREFILL_WARNINGS[w]).join(" · ") || null,
       duplicate,
     });
-    setValues((v) => {
-      const autoTitle = !v.displayTitle || v.displayTitle === v.youtubeTitle;
-      return {
-        ...v,
-        youtubeId,
-        youtubeTitle: title ?? (newClip ? "" : v.youtubeTitle),
-        displayTitle: newClip && autoTitle ? (title ?? "") : v.displayTitle || title || "",
-        // Same clip: keep a date the Curator may have corrected. New clip: always take its own date.
-        broadcastDate: newClip ? (publishDate ?? "") : v.broadcastDate || publishDate || "",
-      };
-    });
+    // Apply to the latest values, in case the Curator typed while the clip was loading.
+    setValues((v) => ({ ...v, ...prefillFromClip(v, filledFrom, clip).fields }));
   };
 
   const copyPrompt = async () => {
