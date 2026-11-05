@@ -6,7 +6,7 @@ status: ready-for-agent
 
 ## Problem Statement
 
-The Curator keeps their favourite ghost stories from the YouTube channel "The Ghost Radio" in an Instagram Story Highlight. With around 100 clips in it, Fans struggle to browse back through it. The Highlight has no search, no filtering, and no way to tell stories apart without tapping through them one by one, so the collection gets harder to use the more it grows.
+The Curator keeps their favourite ghost stories from YouTube in an Instagram Story Highlight. Most come from the channel "The Ghost Radio", but some come from other Channels. With around 100 clips in it, Fans struggle to browse back through it. The Highlight has no search, no filtering, and no way to tell stories apart without tapping through them one by one, so the collection gets harder to use the more it grows.
 
 ## Solution
 
@@ -201,7 +201,8 @@ The deep module behind the public page. It takes the full list of Published Stor
 
 ## Further Notes
 
-- The vocabulary follows [GLOSSARY.md](../../GLOSSARY.md): Archive, Story, Curator, Fan, Synopsis, Display Title, Storyteller, Tag, Scare Level, Province, Place, Broadcast Date, Added Date, Draft, Published.
+- The vocabulary follows [GLOSSARY.md](../../GLOSSARY.md): Archive, Story, Channel, Curator, Fan, Synopsis, Display Title, Storyteller, Tag, Scare Level, Province, Place, Broadcast Date, Added Date, Draft, Published.
+- A Story can come from any YouTube Channel, not just The Ghost Radio. Nothing in the data model ties a Story to one Channel. The Channel isn't stored or shown yet, and Fans can't filter by it. If that becomes useful, add a Channel field filled from oEmbed's `author_name`.
 - Revisit ADR 0001 if the Archive grows into the many thousands of Stories.
 - This spec hasn't been published to an issue tracker yet. Run `/setup-matt-pocock-skills` to configure one, then publish this spec with the `ready-for-agent` label.
 - The UI is Thai-first. A dark theme fits the subject matter.

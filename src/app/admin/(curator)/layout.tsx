@@ -7,7 +7,7 @@ export default function CuratorLayout({ children }: LayoutProps<"/admin">) {
     <div className="mx-auto grid w-full max-w-5xl gap-6 px-4 py-6">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
         <nav className="flex flex-wrap items-center gap-1">
-          <Link href="/admin" className="mr-3 font-heading text-lg font-bold">
+          <Link href="/admin" className="mr-3 font-heading text-lg font-semibold">
             Haunt Memo · จัดการ
           </Link>
           <Button asChild variant="ghost" size="sm">

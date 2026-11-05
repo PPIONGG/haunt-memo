@@ -100,7 +100,7 @@ export const GEMINI_DRAFT_SCHEMA = {
 
 export function buildGeminiPrompt(tagNames: readonly string[], provinces: readonly string[]): string {
   return [
-    "คุณเป็นผู้ช่วยทำคลังเรื่องผีจากรายการ The Ghost Radio",
+    "คุณเป็นผู้ช่วยทำคลังเรื่องผีที่คัดมาจากรายการเล่าเรื่องผีบน YouTube",
     "ดูคลิป YouTube ที่แนบมา แล้วตอบกลับเป็น JSON ออบเจกต์เดียวเท่านั้น ที่ตรงกับ JSON Schema นี้:",
     "",
     "```json",

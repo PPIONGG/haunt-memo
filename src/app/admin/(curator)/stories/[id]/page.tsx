@@ -34,7 +34,7 @@ export default async function EditStoryPage(props: PageProps<"/admin/stories/[id
 
   return (
     <section className="grid gap-6">
-      <h1 className="font-heading text-2xl font-bold">แก้ไขเรื่อง</h1>
+      <h1 className="font-heading text-2xl font-semibold">แก้ไขเรื่อง</h1>
       <StoryForm
         storyId={story.id}
         initial={initial}

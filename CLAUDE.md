@@ -1,6 +1,6 @@
 # Haunt Memo
 
-A personal curated archive of ghost stories from the YouTube channel "The Ghost Radio". See `GLOSSARY.md` for domain vocabulary and `docs/specs/` for specs.
+A personal curated archive of ghost stories from YouTube, mostly from The Ghost Radio but open to any Channel. See `GLOSSARY.md` for domain vocabulary and `docs/specs/` for specs.
 
 ## Agent skills
 
