@@ -21,6 +21,16 @@ insert into public.curator_allowlist (email) values ('you@example.com');
 
 Google sign-in against local Supabase needs `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET` in `.env.local`.
 
+## Preview without Supabase
+
+Run the public Archive with made-up sample Stories (no database, no `.env.local` needed):
+
+```bash
+HAUNT_MEMO_DEMO=1 pnpm dev
+```
+
+Thumbnails don't load in this mode because the sample YouTube ids are placeholders. The admin area still needs Supabase.
+
 ## Tests
 
 ```bash

@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import type { ArchiveStory } from "@/domain/archive";
-import { createPublicClient } from "@/lib/supabase/public";
+import { DEMO_ARCHIVE } from "@/lib/demo-archive";
 
 /** Cache tag for everything the public Archive page reads. Curator mutations expire it. */
 export const ARCHIVE_CACHE_TAG = "archive";
@@ -11,6 +11,10 @@ export async function getPublishedArchive(): Promise<ArchiveStory[]> {
   cacheTag(ARCHIVE_CACHE_TAG);
   cacheLife("days");
 
+  if (process.env.HAUNT_MEMO_DEMO === "1") return DEMO_ARCHIVE;
+
+  // Imported lazily so demo mode runs without Supabase environment variables.
+  const { createPublicClient } = await import("@/lib/supabase/public");
   const { data, error } = await createPublicClient()
     .from("stories")
     .select(
