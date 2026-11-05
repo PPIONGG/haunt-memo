@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { AccountMenu } from "@/components/admin/account-menu";
 import { Button } from "@/components/ui/button";
+import { requireCurator } from "@/lib/curator";
 
 export default function CuratorLayout({ children }: LayoutProps<"/admin">) {
   return (
@@ -22,18 +24,21 @@ export default function CuratorLayout({ children }: LayoutProps<"/admin">) {
             </Link>
           </Button>
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <Button asChild size="sm">
             <Link href="/admin/stories/new">+ เพิ่มเรื่อง</Link>
           </Button>
-          <form action="/auth/sign-out" method="post">
-            <Button type="submit" variant="outline" size="sm">
-              ออกจากระบบ
-            </Button>
-          </form>
+          <Suspense fallback={null}>
+            <CuratorAccount />
+          </Suspense>
         </div>
       </header>
       <Suspense fallback={<p className="text-muted-foreground">กำลังโหลด…</p>}>{children}</Suspense>
     </div>
   );
+}
+
+async function CuratorAccount() {
+  const { user } = await requireCurator();
+  return <AccountMenu email={user.email ?? "ผู้คัดสรร"} />;
 }
