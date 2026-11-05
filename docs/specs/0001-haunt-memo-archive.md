@@ -62,7 +62,7 @@ The Curator signs in to a private admin area to add Stories. They paste a YouTub
 
 ### Curator — access
 
-33. As the Curator, I want to sign in to the admin area with my Google account, so that I don't have to manage a password.
+33. As the Curator, I want to sign in to the admin area with my email and password, so that I can get in without setting up anything else ([ADR 0006](../adr/0006-curator-signs-in-with-password.md)).
 34. As the Curator, I want only my email to be allowed in, so that nobody else can change the Archive.
 35. As the Curator, I want anyone who isn't me to be blocked even if they reach the admin URL or call the database directly, so that the Archive is safe.
 
@@ -103,7 +103,7 @@ The Curator signs in to a private admin area to add Stories. They paste a YouTub
 
 - Next.js (App Router) + TypeScript, deployed on Vercel.
 - UI built with shadcn/ui on Tailwind (Card, Dialog, Input/Command, Badge, Select, Form, Toggle).
-- Supabase: Postgres for data and Supabase Auth with the Google provider for the Curator.
+- Supabase: Postgres for data and Supabase Auth with email and password for the Curator.
 - Client-side fuzzy search (Fuse.js or equivalent) over the full Published dataset ([ADR 0001](../adr/0001-client-side-search.md)).
 
 ### Architecture and scope boundaries
@@ -166,7 +166,7 @@ The deep module behind the public page. It takes the full list of Published Stor
 
 ### Admin area
 
-- Behind Google sign-in. Non-allowlisted accounts are signed out with a "not authorised" message.
+- Behind email and password sign-in. Non-allowlisted accounts are signed out with a "not authorised" message.
 - Story list with a status filter, a create/edit form, Publish/Unpublish, delete with confirmation, and Tag/Storyteller rename and merge.
 - The form has a "Copy Gemini prompt" button and a "Paste Gemini JSON" area that prefills fields and shows warnings inline.
 - A duplicate youtube_id check runs before saving.

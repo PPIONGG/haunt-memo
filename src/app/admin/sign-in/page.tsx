@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { SignInWithGoogle } from "./sign-in-with-google";
+import { SignInForm } from "./sign-in-form";
 
 const ERRORS: Record<string, string> = {
   not_authorised: "บัญชีนี้ไม่มีสิทธิ์เข้าส่วนจัดการ ระบบได้ออกจากระบบให้แล้ว",
@@ -13,7 +13,7 @@ export default function SignInPage(props: PageProps<"/admin/sign-in">) {
       <Suspense>
         <SignInError searchParams={props.searchParams} />
       </Suspense>
-      <SignInWithGoogle />
+      <SignInForm />
     </main>
   );
 }

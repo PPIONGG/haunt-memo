@@ -1,3 +1,6 @@
+// Per-request: the page depends on the signed-in Curator.
+export const instant = false;
+
 import { VocabularyManager } from "@/components/admin/vocabulary-manager";
 import { requireCurator } from "@/lib/curator";
 

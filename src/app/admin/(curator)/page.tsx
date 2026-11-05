@@ -1,3 +1,6 @@
+// Per-request: the page depends on the signed-in Curator.
+export const instant = false;
+
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
