@@ -137,8 +137,10 @@ function MapTeaser({ stats, total, onOpenMap }: { stats: ProvinceStat[]; total: 
           <ThailandMap stats={stats} labels="none" dotSpacing={22} pinScale={1.6} />
         </div>
       </div>
-      <div className="hidden border-l p-6 lg:block">
-        <ThailandMap stats={stats} labels="busiest" dotSpacing={16} pinScale={1.15} onSelect={(p) => onOpenMap(p)} />
+      <div className="relative hidden border-l lg:block">
+        <div className="absolute inset-6">
+          <ThailandMap stats={stats} labels="busiest" dotSpacing={16} pinScale={1.15} onSelect={(p) => onOpenMap(p)} />
+        </div>
       </div>
     </section>
   );

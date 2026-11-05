@@ -59,7 +59,7 @@ export function ThailandMap({
 
   return (
     <svg viewBox={viewBox} preserveAspectRatio="xMidYMid meet" className={cn("block h-full w-full", className)} role="group" aria-label="แผนที่เรื่องผีในประเทศไทย">
-      <path d={dots} stroke="var(--dot)" strokeWidth={dotSpacing * 0.32} strokeLinecap="round" />
+      <path d={dots} stroke="var(--dot)" strokeWidth={dotSpacing * 0.4} strokeLinecap="round" />
       {pins.map((s) => {
         const r = (11 + Math.sqrt(s.count) * 6) * scale;
         const isSelected = s.province === selected;

@@ -119,7 +119,7 @@ export function MapView({ stories, stats, fanState, selected, onSelect, onOpenSt
           </div>
         </div>
 
-        <div className="absolute inset-x-4 top-[104px] bottom-[276px] lg:inset-x-6 lg:top-16 lg:bottom-6">
+        <div className="absolute inset-x-4 top-[100px] bottom-24 lg:inset-x-6 lg:top-16 lg:bottom-6">
           <ThailandMap
             stats={inRegion}
             region={region}
@@ -127,8 +127,8 @@ export function MapView({ stories, stats, fanState, selected, onSelect, onOpenSt
             selected={selected}
             onSelect={onSelect}
             labels="busiest"
-            dotSpacing={14}
-            pinScale={1.25}
+            dotSpacing={16}
+            pinScale={1.4}
           />
         </div>
 
