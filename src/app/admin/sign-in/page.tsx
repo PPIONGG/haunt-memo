@@ -9,7 +9,7 @@ const ERRORS: Record<string, string> = {
 export default function SignInPage(props: PageProps<"/admin/sign-in">) {
   return (
     <main className="mx-auto grid w-full max-w-sm flex-1 content-center gap-6 px-4 py-16 text-center">
-      <h1 className="font-heading text-2xl font-bold">ส่วนจัดการของผู้คัดสรร</h1>
+      <h1 className="font-heading text-2xl font-semibold">ส่วนจัดการของผู้คัดสรร</h1>
       <Suspense>
         <SignInError searchParams={props.searchParams} />
       </Suspense>

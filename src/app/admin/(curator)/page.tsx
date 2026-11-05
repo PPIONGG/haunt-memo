@@ -28,7 +28,7 @@ export default async function AdminStoriesPage(props: PageProps<"/admin">) {
   return (
     <section className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-heading text-2xl font-bold">เรื่องในคลัง</h1>
+        <h1 className="font-heading text-2xl font-semibold">เรื่องในคลัง</h1>
         <div className="flex gap-1" role="group" aria-label="กรองตามสถานะ">
           {STATUS_FILTERS.map((f) => (
             <Button key={f.value} asChild size="sm" variant={status === f.value ? "secondary" : "ghost"}>

@@ -12,7 +12,7 @@ export default async function VocabularyPage() {
 
   return (
     <section className="grid gap-8">
-      <h1 className="font-heading text-2xl font-bold">แท็กและผู้เล่า</h1>
+      <h1 className="font-heading text-2xl font-semibold">แท็กและผู้เล่า</h1>
       <VocabularyManager
         kind="tags"
         title="แท็ก"

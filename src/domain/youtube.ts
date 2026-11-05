@@ -11,8 +11,14 @@ export function parseYouTubeUrl(input: string): YouTubeId | null {
   return candidate && YOUTUBE_ID.test(candidate) ? candidate : null;
 }
 
-export function youTubeThumbnailUrl(id: YouTubeId): string {
-  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+const THUMBNAIL_FILES = { hq: "hqdefault.jpg", max: "maxresdefault.jpg" } as const;
+
+/**
+ * `hq` (480×360) exists for every clip but is letterboxed, so show it at 16:9 to crop the bars.
+ * `max` (1280×720) is sharper but missing for some older clips, so keep `hq` as a fallback.
+ */
+export function youTubeThumbnailUrl(id: YouTubeId, size: keyof typeof THUMBNAIL_FILES = "hq"): string {
+  return `https://i.ytimg.com/vi/${id}/${THUMBNAIL_FILES[size]}`;
 }
 
 export function youTubeWatchUrl(id: YouTubeId): string {
