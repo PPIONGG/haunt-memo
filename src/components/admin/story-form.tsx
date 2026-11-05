@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { copyText } from "@/lib/copy-text";
 import { cn } from "@/lib/utils";
 import { VocabularyInput } from "./vocabulary-input";
 
@@ -97,8 +98,9 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
   };
 
   const copyPrompt = async () => {
-    await navigator.clipboard.writeText(buildGeminiPrompt(existingTags.map((t) => t.name), PROVINCES));
-    toast.success("คัดลอก prompt แล้ว นำไปวางใน Gemini พร้อมลิงก์คลิป");
+    const copied = await copyText(buildGeminiPrompt(existingTags.map((t) => t.name), PROVINCES));
+    if (copied) toast.success("คัดลอก prompt แล้ว นำไปวางใน Gemini พร้อมลิงก์คลิป");
+    else toast.error("คัดลอกไม่สำเร็จ คลิกที่หน้าเว็บก่อนแล้วลองใหม่");
   };
 
   const applyGemini = () => {
