@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { createSessionClient } from "@/lib/supabase/server";
 
 /**
@@ -8,6 +9,9 @@ import { createSessionClient } from "@/lib/supabase/server";
  * RLS is the real gate; this only keeps non-Curators out of the admin UI.
  */
 export const requireCurator = cache(async () => {
+  // Admin pages are per-request: Supabase Auth reads the clock to check the session,
+  // which Next.js refuses during prerendering.
+  await connection();
   const supabase = await createSessionClient();
   const {
     data: { user },

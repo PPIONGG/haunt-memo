@@ -1,3 +1,6 @@
+// Per-request: the page depends on the signed-in Curator.
+export const instant = false;
+
 import { notFound } from "next/navigation";
 import { StoryForm, type StoryFormValues } from "@/components/admin/story-form";
 import { youTubeWatchUrl } from "@/domain/youtube";

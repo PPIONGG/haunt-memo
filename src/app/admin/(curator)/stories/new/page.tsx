@@ -1,3 +1,6 @@
+// Per-request: the page depends on the signed-in Curator.
+export const instant = false;
+
 import { EMPTY_STORY, StoryForm } from "@/components/admin/story-form";
 import { getCuratorVocabulary } from "@/lib/curator-vocabulary";
 
