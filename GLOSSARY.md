@@ -48,6 +48,10 @@ _Avoid_: Rating, score, horror level
 The Thai province where the events in a Story happened. Fans can filter by it.
 _Avoid_: Location, region
 
+**Region**:
+One of the four parts of Thailand a Province belongs to: เหนือ (North), อีสาน (Northeast), กลาง (Central) or ใต้ (South). Fans can narrow the Map to one Region.
+_Avoid_: Area, zone, part
+
 **Place**:
 An optional free-text description of the exact place where the events in a Story happened, such as a specific hospital or village.
 _Avoid_: Location, venue
