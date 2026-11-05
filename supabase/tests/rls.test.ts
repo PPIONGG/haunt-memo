@@ -5,7 +5,7 @@ import { allowCurator, anonClient, resetArchive, serviceClient, signedInClient }
 
 const CURATOR_EMAIL = "curator@haunt-memo.test";
 const STRANGER_EMAIL = "stranger@haunt-memo.test";
-const PASSWORD_IMPOSTOR_EMAIL = "allowlisted-but-password@haunt-memo.test";
+const UNCLAIMED_CURATOR_EMAIL = "allowlisted-without-account@haunt-memo.test";
 
 const PUBLISHED_ID = "pubAAAAAAAA";
 const DRAFT_ID = "draftBBBBBB";
@@ -73,14 +73,12 @@ async function storyCount(): Promise<number> {
 
 let curator: SupabaseClient;
 let stranger: SupabaseClient;
-let passwordImpostor: SupabaseClient;
 
 beforeAll(async () => {
   await allowCurator(CURATOR_EMAIL);
-  await allowCurator(PASSWORD_IMPOSTOR_EMAIL);
-  curator = await signedInClient(CURATOR_EMAIL, "google");
-  stranger = await signedInClient(STRANGER_EMAIL, "google");
-  passwordImpostor = await signedInClient(PASSWORD_IMPOSTOR_EMAIL, "email");
+  await allowCurator(UNCLAIMED_CURATOR_EMAIL);
+  curator = await signedInClient(CURATOR_EMAIL);
+  stranger = await signedInClient(STRANGER_EMAIL);
 });
 
 beforeEach(async () => {
@@ -114,10 +112,21 @@ describe("an anonymous Fan", () => {
   });
 });
 
+describe("sign-up", () => {
+  it("is closed, so nobody can claim an allowlisted email that has no account yet", async () => {
+    const { data, error } = await anonClient().auth.signUp({
+      email: UNCLAIMED_CURATOR_EMAIL,
+      password: "a-long-enough-password",
+    });
+
+    expect(error).not.toBeNull();
+    expect(data.session).toBeNull();
+  });
+});
+
 describe.each([
   ["an anonymous Fan", () => anonClient()],
   ["a signed-in non-Curator", () => stranger],
-  ["someone signed in with a password under an allowlisted email", () => passwordImpostor],
 ])("%s", (_who, client) => {
   it("can't insert into any table", async () => {
     const db = client();
