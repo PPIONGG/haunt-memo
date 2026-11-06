@@ -71,12 +71,14 @@ export function ThailandMap({
             key={s.province}
             role={select ? "button" : undefined}
             tabIndex={select ? 0 : undefined}
-            aria-label={`${s.province} ${s.count} เรื่อง น่ากลัวเฉลี่ย ${s.averageScare.toFixed(1)}`}
+            aria-label={select ? `${s.province} ${s.count} เรื่อง น่ากลัวเฉลี่ย ${s.averageScare.toFixed(1)}` : undefined}
             aria-pressed={select ? isSelected : undefined}
             onClick={select}
             onKeyDown={select ? (e: KeyboardEvent) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), select()) : undefined}
             className={cn(select && "cursor-pointer outline-none [&:focus-visible>circle:first-child]:stroke-ring")}
           >
+            {/* วงใสสำหรับนิ้ว: จุดที่เล็กที่สุดกว้าง 23px ไม่ถึง 24px ตาม WCAG 2.5.8 ขยายเฉพาะพื้นที่กด */}
+            {select && <circle cx={s.x} cy={s.y} r={r + 11 * scale} fill="transparent" />}
             <circle cx={s.x} cy={s.y} r={r + 7 * scale} fill="transparent" stroke={isSelected ? "var(--foreground)" : "none"} strokeWidth={3 * scale} />
             <circle cx={s.x} cy={s.y} r={r} fill={fill} stroke="var(--background)" strokeWidth={3 * scale} />
             {s.count >= 5 && (

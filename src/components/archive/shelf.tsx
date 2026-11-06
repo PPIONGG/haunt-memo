@@ -19,7 +19,7 @@ export function Shelf({ title, stories, fanState, onOpenStory, onSeeAll }: Props
       <div className="flex items-baseline justify-between px-4 lg:px-12">
         <h2 className="text-lg font-medium lg:text-[22px]">{title}</h2>
         {onSeeAll && (
-          <button type="button" onClick={onSeeAll} className="flex items-center gap-0.5 text-[13px] text-faint hover:text-foreground">
+          <button type="button" onClick={onSeeAll} className="flex items-center gap-0.5 py-1 text-[13px] text-faint hover:text-foreground">
             ดูทั้งหมด
             <ChevronRightIcon className="size-3.5" />
           </button>

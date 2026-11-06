@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { ClipboardCopyIcon, WandSparklesIcon } from "lucide-react";
+import { ClipboardCopyIcon, GhostIcon, WandSparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 import { lookupYouTube, saveStory, type StoryStatus, type YouTubeLookup } from "@/app/admin/actions";
 import { prefillFromClip, type PrefillWarning } from "@/domain/clip-prefill";
@@ -320,12 +320,16 @@ export function StoryForm({ storyId, initial, existingTags, existingStorytellers
                 <Button
                   key={n}
                   type="button"
+                  size="icon-lg"
                   variant={values.scareLevel === n ? "secondary" : "outline"}
                   aria-pressed={values.scareLevel === n}
                   aria-label={`ระดับ ${n}`}
                   onClick={() => set({ scareLevel: n })}
                 >
-                  {"👻".repeat(n)}
+                  <GhostIcon
+                    strokeWidth={1.5}
+                    className={cn("size-5", n <= (values.scareLevel ?? 0) ? "text-foreground" : "text-muted-foreground opacity-60")}
+                  />
                 </Button>
               ))}
             </div>

@@ -115,7 +115,7 @@ function MapTeaser({ stats, total, onOpenMap }: { stats: ProvinceStat[]; total: 
               <button
                 type="button"
                 onClick={() => onOpenMap(s.province)}
-                className="grid w-full grid-cols-[120px_1fr_28px] items-center gap-3 text-left text-sm text-muted-foreground hover:text-foreground"
+                className="grid w-full grid-cols-[120px_1fr_28px] items-center gap-3 py-1 text-left text-sm text-muted-foreground hover:text-foreground"
               >
                 <span className="truncate">{s.province}</span>
                 <span className="h-1.5 overflow-hidden rounded-full bg-secondary">
@@ -133,7 +133,7 @@ function MapTeaser({ stats, total, onOpenMap }: { stats: ProvinceStat[]; total: 
         >
           <MapIcon className="size-[18px]" /> เปิดแผนที่
         </button>
-        <div className="pointer-events-none absolute top-3 right-0 bottom-3 w-[46%] lg:hidden">
+        <div aria-hidden className="pointer-events-none absolute top-3 right-0 bottom-3 w-[46%] lg:hidden">
           <ThailandMap stats={stats} labels="none" dotSpacing={22} pinScale={1.6} />
         </div>
       </div>

@@ -29,6 +29,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-strong: var(--destructive-strong);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -66,6 +67,7 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
+  --destructive-strong: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -102,6 +104,8 @@
   --accent: #2c2c30;
   --accent-foreground: #f2f2f2;
   --destructive: #e5484d;
+  /* #e5484d บนพื้น destructive/20 ได้แค่ 4.13:1 ไม่ผ่าน WCAG 1.4.3 สีนี้ได้ 5.57:1 */
+  --destructive-strong: #ff6369;
   --border: rgb(242 242 242 / 8%);
   --input: rgb(242 242 242 / 14%);
   --ring: #86868c;

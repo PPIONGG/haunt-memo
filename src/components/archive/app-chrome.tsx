@@ -42,7 +42,7 @@ export function TopNav({ view, onView, searchText, onSearchText, onRandom, overH
               type="button"
               onClick={() => onView(t.view)}
               aria-current={view === t.view ? "page" : undefined}
-              className={cn("text-[15px] transition-colors", view === t.view ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("py-1 text-[15px] transition-colors", view === t.view ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
               {t.label}
             </button>

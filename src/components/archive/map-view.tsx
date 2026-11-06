@@ -80,7 +80,7 @@ export function MapView({ stories, stats, fanState, selected, onSelect, onOpenSt
                 </li>
               ))}
             </ul>
-            <button type="button" onClick={() => onSeeProvince(stat.province)} className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <button type="button" onClick={() => onSeeProvince(stat.province)} className="flex w-fit items-center gap-1 py-1 text-sm text-muted-foreground hover:text-foreground">
               ค้นหาและกรองเรื่องใน{stat.province} <ChevronRightIcon className="size-4" />
             </button>
           </div>
@@ -139,7 +139,7 @@ export function MapView({ stories, stats, fanState, selected, onSelect, onOpenSt
               <p className="text-[13px] text-muted-foreground">{summary}</p>
             </div>
             {stat && (
-              <button type="button" onClick={() => onSeeProvince(stat.province)} className="flex items-center text-[13px] text-faint">
+              <button type="button" onClick={() => onSeeProvince(stat.province)} className="flex items-center py-1 text-[13px] text-faint">
                 ดูทั้งหมด <ChevronRightIcon className="size-3.5" />
               </button>
             )}
